@@ -1,4 +1,7 @@
 import React from 'react'
+import { ContactsProvider } from '../contexts/ContactsProvider';
+import { ConversationsProvider } from '../contexts/ConversationsProvider';
+import { SocketProvider } from '../contexts/SocketProvider';
 import '../CSS/App.css';
 import useLocalStorage from '../hooks/useLocalStorage';
 import Dashboard from './Dashboard';
@@ -8,9 +11,19 @@ function App() {
 
   const [id, setId] = useLocalStorage('id')
 
+  const dashboard = (
+    <SocketProvider id={id}>
+      <ContactsProvider>
+        <ConversationsProvider id={id}>
+          <Dashboard id={id} />
+        </ConversationsProvider>
+      </ContactsProvider>
+    </SocketProvider>
+  )
+
   return (
 
-    id ? <Dashboard id={id} /> : <Login onIdSubmit={setId} />
+    id ? dashboard : <Login onIdSubmit={setId} />
 
   );
 }
